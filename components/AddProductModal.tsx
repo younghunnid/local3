@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Product } from '../types';
 
@@ -30,7 +31,6 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ onClose, onSubmit, sh
     }
 
     Array.from(files).forEach(file => {
-      // FIX: Add a type guard because `file` can be inferred as `unknown` in some TS configs.
       if (file instanceof Blob) {
         const reader = new FileReader();
         reader.onloadend = () => {

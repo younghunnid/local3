@@ -1,7 +1,6 @@
 
 import { GoogleGenAI, Type, Chat } from "@google/genai";
 
-// Fix: Initializing GoogleGenAI with only process.env.API_KEY as per guidelines.
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export async function getAiRecommendation(query: string) {
