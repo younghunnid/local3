@@ -1,8 +1,105 @@
 
-import { ServiceCategory, Provider, Property } from './types';
+import { ServiceCategory, Provider, Property, BookingHistoryItem, User, Product, Review, SiteContent } from './types';
 
 // EDIT THIS LINE: Change 'logo.png' to your actual logo filename (e.g., 'my-logo.jpg')
 export const LOGO_URL = 'logo.png';
+
+export const DEFAULT_SITE_CONTENT: SiteContent = {
+  stats: {
+    pros: { value: "2,500+", label: "Verified Pros" },
+    clients: { value: "15k+", label: "Happy Clients" },
+    items: { value: "1,000s", label: "of Items" },
+    support: { value: "24h", label: "Support" }
+  },
+  socials: {
+    facebook: "FB",
+    instagram: "IG",
+    twitter: "TW"
+  },
+  footerLabels: {
+    exploreTitle: "Explore",
+    howItWorks: "How it works",
+    serviceList: "Service List",
+    points: "Points & Rewards",
+    dashboard: "Provider Dashboard",
+    supportTitle: "Support",
+    helpCenter: "Help Center",
+    safety: "Safety Guide",
+    tos: "Terms of Service",
+    contact: "Contact Support"
+  },
+  tagline: "Making professional services accessible through skill, trust, and community opportunity. Based in Monrovia, serving globally.",
+  copyrightYear: "2024",
+  madeIn: "Made with ❤️ in Liberia",
+  operatingIn: "Operating Globally"
+};
+
+export const MOCK_USERS: User[] = [
+  { id: 1, name: "Test User", email: "user@lsers.pro", password: "password123", providerId: 1 },
+  { id: 2, name: "John Doe", email: "john@test.com", password: "password123" },
+  { id: 3, name: "Massa Washington", email: "massa@test.com", password: "password123" },
+  { id: 4, name: "AB Motors", email: "ab@test.com", password: "password123" },
+  { id: 5, name: "Fatu Kromah", email: "fatu@test.com", password: "password123" }
+];
+
+export const MOCK_REVIEWS: Review[] = [
+  { id: 1, providerId: 1, authorId: 2, authorName: "John Doe", rating: 5, comment: "Absolutely phenomenal work! The wiring was done perfectly and they were very professional. Highly recommend.", timestamp: Date.now() - 1000 * 60 * 60 * 24 * 2 },
+  { id: 2, providerId: 1, authorId: 3, authorName: "Massa Washington", rating: 4, comment: "Great service, very knowledgeable. They arrived on time and fixed the issue quickly. Would use again.", timestamp: Date.now() - 1000 * 60 * 60 * 24 * 5 },
+  { id: 3, providerId: 2, authorId: 5, authorName: "Fatu Kromah", rating: 5, comment: "Fixed my leaking pipe in under an hour. Very clean work and fair pricing. A lifesaver!", timestamp: Date.now() - 1000 * 60 * 60 * 24 * 1 },
+  { id: 4, providerId: 3, authorId: 2, authorName: "John Doe", rating: 3, comment: "Did an okay job hanging the shelves, but was a bit late.", timestamp: Date.now() - 1000 * 60 * 60 * 24 * 10 },
+  { id: 5, providerId: 13, authorId: 3, authorName: "Massa Washington", rating: 5, comment: "My PC is running faster than ever! They identified the problem right away and had it fixed the same day.", timestamp: Date.now() - 1000 * 60 * 60 * 24 * 3 },
+];
+
+export const MOCK_PRODUCTS: Product[] = [
+  {
+    id: 1,
+    title: "Slightly Used iPhone 13 Pro",
+    price: 650,
+    description: "Excellent condition iPhone 13 Pro, 256GB in Sierra Blue. No scratches on the screen, battery health at 92%. Comes with original box.",
+    sellerName: "John Doe",
+    sellerId: 2,
+    sellerPhone: "+231776966080",
+    photos: ["https://images.unsplash.com/photo-1632569623239-2d9d136fa5a5?w=400&h=400&fit=crop"],
+    location: "Sinkor, Monrovia",
+    condition: "Used - Like New"
+  },
+  {
+    id: 2,
+    title: "Hand-carved Wooden Mask",
+    price: 45,
+    description: "Beautiful, authentic Liberian wooden mask, perfect for home decor. Carved from local mahogany by a master artisan.",
+    sellerName: "Massa Washington",
+    sellerId: 3,
+    sellerPhone: "+231776966081",
+    photos: ["https://images.unsplash.com/photo-1534399124424-023a7b539c27?w=400&h=400&fit=crop"],
+    location: "Waterside Market",
+    condition: "New"
+  },
+  {
+    id: 3,
+    title: "Toyota RAV4 2018",
+    price: 18500,
+    description: "Reliable and well-maintained 2018 Toyota RAV4. Low mileage, clean interior, recently serviced. Great for Liberian roads.",
+    sellerName: "AB Motors",
+    sellerId: 4,
+    sellerPhone: "+231776966082",
+    photos: ["https://images.unsplash.com/photo-1594053097223-f42aa39f2caf?w=400&h=400&fit=crop"],
+    location: "Paynesville",
+    condition: "Used - Good"
+  },
+  {
+    id: 4,
+    title: "Brand New Samsung 55\" Smart TV",
+    price: 800,
+    description: "Unopened Samsung 55-inch Crystal UHD 4K Smart TV. Won it in a raffle, but already have a good TV. My loss is your gain!",
+    sellerName: "Fatu Kromah",
+    sellerId: 5,
+    sellerPhone: "+231776966083",
+    photos: ["https://images.unsplash.com/photo-1622219890522-132d74a496a7?w=400&h=400&fit=crop"],
+    location: "Congo Town",
+    condition: "New"
+  }
+];
 
 export const SERVICE_CATEGORIES: ServiceCategory[] = [
   { id: 'electrician', title: 'Electrician', icon: '⚡', description: 'Wiring & Repairs', group: 'home' },
@@ -124,17 +221,15 @@ const generateMockProviders = (): Provider[] => {
   ];
 
   const portfolioSamples = [
-    { photoId: "1581092160607-ee22621ddbb3", title: "Smart Home Installation", description: "Complete rewiring and smart control panel integration for a luxury villa." },
-    { photoId: "1504148455328-497c1121d494", title: "Modern Lighting Design", description: "Architectural lighting setup for a high-end restaurant in Monrovia." },
-    { photoId: "1484154218962-a197022b5858", title: "Kitchen Renovation", description: "Full plumbing and appliance installation for a modern home makeover." }
+    { photo: "https://images.unsplash.com/photo-1581092160607-ee22621ddbb3?w=800&h=600&fit=crop", title: "Smart Home Installation", description: "Complete rewiring and smart control panel integration for a luxury villa." },
+    { photo: "https://images.unsplash.com/photo-1504148455328-497c1121d494?w=800&h=600&fit=crop", title: "Modern Lighting Design", description: "Architectural lighting setup for a high-end restaurant in Monrovia." },
+    { photo: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop", title: "Kitchen Renovation", description: "Full plumbing and appliance installation for a modern home makeover." }
   ];
 
   SERVICE_CATEGORIES.forEach(cat => {
     providers.push({
       id: idCounter++,
       name: `Expert ${cat.title} 1`,
-      rating: 4.5 + Math.random() * 0.5,
-      reviews: 20 + Math.floor(Math.random() * 100),
       distance: (0.5 + Math.random() * 5).toFixed(1) + " miles",
       distanceValue: 0.5 + Math.random() * 4.5,
       priceValue: 30 + Math.floor(Math.random() * 100),
@@ -149,7 +244,10 @@ const generateMockProviders = (): Provider[] => {
       responseTime: "15 mins",
       languages: ["English"],
       category: cat.id,
-      portfolio: portfolioSamples
+      portfolio: portfolioSamples,
+      status: 'active',
+      latitude: 6.31 + (Math.random() - 0.5) * 0.1,
+      longitude: -10.8 + (Math.random() - 0.5) * 0.15,
     });
   });
 
@@ -157,3 +255,56 @@ const generateMockProviders = (): Provider[] => {
 };
 
 export const MOCK_PROVIDERS: Provider[] = generateMockProviders();
+
+export const MOCK_BOOKING_HISTORY: BookingHistoryItem[] = [
+  {
+    id: "bh1",
+    type: "service",
+    name: "Plumbing Service",
+    providerOrHost: "Expert Plumber 1",
+    date: "2024-07-15",
+    status: "Completed",
+    cost: 75,
+    icon: "🔧"
+  },
+  {
+    id: "bh2",
+    type: "property",
+    name: "Luxury Oceanview Villa",
+    providerOrHost: "Kema Johnson",
+    date: "2024-07-20",
+    status: "Upcoming",
+    cost: 450,
+    icon: "🏡"
+  },
+  {
+    id: "bh3",
+    type: "service",
+    name: "Electrician",
+    providerOrHost: "Expert Electrician 1",
+    date: "2024-06-01",
+    status: "Completed",
+    cost: 120,
+    icon: "⚡"
+  },
+  {
+    id: "bh4",
+    type: "service",
+    name: "Graphics Design",
+    providerOrHost: "Expert Graphics Design 1",
+    date: "2024-05-25",
+    status: "Cancelled",
+    cost: 250,
+    icon: "🎨"
+  },
+    {
+    id: "bh5",
+    type: "property",
+    name: "Modern City Apartment",
+    providerOrHost: "Musa Kamara",
+    date: "2024-04-10",
+    status: "Completed",
+    cost: 170,
+    icon: "🏢"
+  },
+];

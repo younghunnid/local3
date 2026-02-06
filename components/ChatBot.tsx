@@ -6,25 +6,48 @@ import AudioRecorder from './AudioRecorder';
 
 const ChatBot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<{ role: 'user' | 'ai'; text: string }[]>([]);
+  const [messages, setMessages] = useState<{ role: 'user' | 'ai'; text: string }[]>(() => {
+    try {
+      const saved = localStorage.getItem('lsersAiChat');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const [unreadCount, setUnreadCount] = useState(0);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [chatSession, setChatSession] = useState<Chat | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const isOpenRef = useRef(isOpen);
+
+  useEffect(() => {
+    isOpenRef.current = isOpen;
+  }, [isOpen]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('lsersAiChat', JSON.stringify(messages));
+    } catch (error) {
+      console.error("Could not save AI chat to localStorage", error);
+    }
+  }, [messages]);
 
   // Initialize chat session and proactive greeting
   useEffect(() => {
     if (!chatSession) {
       startServiceChat().then(session => {
         setChatSession(session);
-        // Simulate a proactive welcome message after 5 seconds
-        setTimeout(() => {
-          const welcomeMsg = { role: 'ai' as const, text: '👋 Welcome to LSERS! I am your AI assistant. Need help finding a plumber or an oceanview villa?' };
-          setMessages([welcomeMsg]);
-          // If the chat isn't open, increment unread count
-          setUnreadCount(prev => (isOpen ? 0 : prev + 1));
-        }, 5000);
+        // Simulate a proactive welcome message after 5 seconds if there are no messages
+        if (messages.length === 0) {
+          setTimeout(() => {
+            const welcomeMsg = { role: 'ai' as const, text: '👋 Welcome to LSERS! I am your AI assistant. Need help finding a plumber or an oceanview villa?' };
+            setMessages(prev => [...prev, welcomeMsg]);
+            if (!isOpenRef.current) {
+              setUnreadCount(prev => prev + 1);
+            }
+          }, 5000);
+        }
       });
     }
 
@@ -32,7 +55,7 @@ const ChatBot: React.FC = () => {
     const handleGlobalOpen = () => setIsOpen(true);
     window.addEventListener('open-lsers-chat', handleGlobalOpen);
     return () => window.removeEventListener('open-lsers-chat', handleGlobalOpen);
-  }, [chatSession, isOpen]);
+  }, [chatSession]);
 
   // Handle auto-scroll and reset unread count when opening
   useEffect(() => {
@@ -116,7 +139,7 @@ const ChatBot: React.FC = () => {
 
           <div 
             ref={scrollRef}
-            className="flex-grow overflow-y-auto p-6 space-y-4 bg-gray-50 scrollbar-hide"
+            className="flex-grow overflow-y-auto p-6 space-y-4 bg-white scrollbar-hide"
           >
             {messages.length === 0 && !isLoading && (
               <div className="flex flex-col items-center justify-center h-full text-center p-8 opacity-40">
@@ -131,10 +154,10 @@ const ChatBot: React.FC = () => {
                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
               >
                 <div
-                  className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+                  className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm leading-relaxed bg-white text-gray-700 border border-gray-100 shadow ${
                     msg.role === 'user'
-                      ? 'bg-indigo-600 text-white shadow-lg'
-                      : 'bg-white text-gray-700 border border-gray-200 shadow-sm'
+                      ? 'rounded-br-none'
+                      : 'rounded-bl-none'
                   }`}
                 >
                   {msg.text}
@@ -160,7 +183,7 @@ const ChatBot: React.FC = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your message..."
-              className="flex-grow px-4 py-3 bg-gray-50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm border border-transparent transition-all"
+              className="flex-grow px-4 py-3 bg-white rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm text-gray-900 border border-gray-200 transition-all"
               autoFocus
             />
             <AudioRecorder 

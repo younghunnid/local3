@@ -17,15 +17,37 @@ const EditProviderModal: React.FC<EditProviderModalProps> = ({ provider, onClose
     onSave(form);
   };
 
+  const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setForm(prev => ({ ...prev, photoDataUrl: reader.result as string, photoId: '' }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const updatePortfolioItem = (index: number, field: keyof PortfolioItem, value: string) => {
     const updatedPortfolio = [...(form.portfolio || [])];
     updatedPortfolio[index] = { ...updatedPortfolio[index], [field]: value };
     setForm({ ...form, portfolio: updatedPortfolio });
   };
+  
+  const handlePortfolioImageChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updatePortfolioItem(index, 'photo', reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const addPortfolioItem = () => {
     const newItem: PortfolioItem = { 
-      photoId: '1581092160607-ee22621ddbb3', 
+      photo: '', 
       title: 'New Project Title', 
       description: 'Briefly describe the results of this project...' 
     };
@@ -37,16 +59,7 @@ const EditProviderModal: React.FC<EditProviderModalProps> = ({ provider, onClose
     setForm({ ...form, portfolio: updatedPortfolio });
   };
 
-  const movePortfolioItem = (index: number, direction: 'up' | 'down') => {
-    const portfolio = [...(form.portfolio || [])];
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
-    if (newIndex < 0 || newIndex >= portfolio.length) return;
-    
-    const temp = portfolio[index];
-    portfolio[index] = portfolio[newIndex];
-    portfolio[newIndex] = temp;
-    setForm({ ...form, portfolio });
-  };
+  const photoSrc = form.photoDataUrl || `https://images.unsplash.com/photo-${form.photoId}?w=120&h=120&fit=crop&crop=face`;
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
@@ -55,11 +68,18 @@ const EditProviderModal: React.FC<EditProviderModalProps> = ({ provider, onClose
         <div className="bg-indigo-600 p-8 text-white flex-shrink-0">
           <button onClick={onClose} className="absolute top-6 right-6 text-white/70 hover:text-white text-2xl transition-colors">✕</button>
           <div className="flex items-center gap-6">
-             <img 
-              src={`https://images.unsplash.com/photo-${form.photoId}?w=120&h=120&fit=crop&crop=face`}
-              className="w-20 h-20 rounded-3xl border-2 border-white/30 object-cover shadow-lg"
-              alt={form.name}
-            />
+             <div className="relative group">
+                <img 
+                  src={photoSrc}
+                  className="w-20 h-20 rounded-3xl border-2 border-white/30 object-cover shadow-lg"
+                  alt={form.name}
+                />
+                 <label className="absolute inset-0 bg-black/50 text-white flex flex-col items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl">
+                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                   <span className="text-[10px] font-bold mt-1">Change</span>
+                   <input type="file" accept="image/*" className="hidden" onChange={handleProfileImageChange} />
+                 </label>
+             </div>
             <div>
               <h2 className="text-3xl font-black">Edit Profile</h2>
               <div className="flex items-center gap-3 mt-1">
@@ -128,30 +148,7 @@ const EditProviderModal: React.FC<EditProviderModalProps> = ({ provider, onClose
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Platform Rating</label>
-                <input 
-                  required
-                  type="number" 
-                  step="0.1"
-                  min="1"
-                  max="5"
-                  className="w-full px-6 py-4 bg-gray-50 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 font-bold"
-                  value={form.rating}
-                  onChange={e => setForm({...form, rating: parseFloat(e.target.value)})}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Total Reviews</label>
-                <input 
-                  required
-                  type="number" 
-                  className="w-full px-6 py-4 bg-gray-50 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 font-bold"
-                  value={form.reviews}
-                  onChange={e => setForm({...form, reviews: parseInt(e.target.value)})}
-                />
-              </div>
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Successful Jobs</label>
                 <input 
@@ -160,6 +157,29 @@ const EditProviderModal: React.FC<EditProviderModalProps> = ({ provider, onClose
                   className="w-full px-6 py-4 bg-gray-50 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 font-bold"
                   value={form.completedJobs}
                   onChange={e => setForm({...form, completedJobs: parseInt(e.target.value)})}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Latitude</label>
+                <input 
+                  type="number" 
+                  step="any"
+                  className="w-full px-6 py-4 bg-gray-50 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 font-bold"
+                  value={form.latitude || ''}
+                  onChange={e => setForm({...form, latitude: parseFloat(e.target.value)})}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Longitude</label>
+                <input 
+                  type="number" 
+                  step="any"
+                  className="w-full px-6 py-4 bg-gray-50 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 font-bold"
+                  value={form.longitude || ''}
+                  onChange={e => setForm({...form, longitude: parseFloat(e.target.value)})}
                 />
               </div>
             </div>
@@ -198,7 +218,6 @@ const EditProviderModal: React.FC<EditProviderModalProps> = ({ provider, onClose
               {(form.portfolio || []).map((item, index) => (
                 <div key={index} className="group relative bg-gray-50 p-8 rounded-[2.5rem] border border-gray-100 animate-fade-in shadow-sm hover:shadow-md transition-shadow">
                   
-                  {/* Item Actions Overlay */}
                   <div className="absolute -top-3 -right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button 
                       type="button" 
@@ -208,47 +227,27 @@ const EditProviderModal: React.FC<EditProviderModalProps> = ({ provider, onClose
                     >
                       ✕
                     </button>
-                    <div className="flex flex-col gap-1 bg-white p-1 rounded-2xl shadow-xl border border-gray-100">
-                      <button 
-                        type="button" 
-                        disabled={index === 0}
-                        onClick={() => movePortfolioItem(index, 'up')}
-                        className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold transition-all ${index === 0 ? 'text-gray-200 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100'}`}
-                      >
-                        ↑
-                      </button>
-                      <button 
-                        type="button" 
-                        disabled={index === (form.portfolio?.length || 0) - 1}
-                        onClick={() => movePortfolioItem(index, 'down')}
-                        className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold transition-all ${index === (form.portfolio?.length || 0) - 1 ? 'text-gray-200 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100'}`}
-                      >
-                        ↓
-                      </button>
-                    </div>
                   </div>
                   
                   <div className="flex flex-col md:flex-row gap-10">
                     <div className="w-full md:w-1/3 flex-shrink-0 space-y-4">
-                      <div className="aspect-[4/3] rounded-3xl overflow-hidden bg-white border-2 border-white shadow-inner">
-                        <img 
-                          src={`https://images.unsplash.com/photo-${item.photoId}?w=400&h=300&fit=crop`}
-                          className="w-full h-full object-cover transition-all"
-                          alt="Project Preview"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=Invalid+Image+ID';
-                          }}
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest pl-1">Unsplash Photo ID</label>
-                        <input 
-                          type="text" 
-                          className="w-full px-4 py-3 bg-white rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs font-mono font-medium"
-                          value={item.photoId}
-                          placeholder="e.g. 1581092160607..."
-                          onChange={e => updatePortfolioItem(index, 'photoId', e.target.value)}
-                        />
+                      <div className="aspect-[4/3] rounded-3xl overflow-hidden bg-white border-2 border-white shadow-inner relative group/image">
+                          {item.photo ? (
+                            <img 
+                              src={item.photo}
+                              className="w-full h-full object-cover"
+                              alt="Project Preview"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">
+                              <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            </div>
+                          )}
+                          <label className="absolute inset-0 bg-black/50 text-white flex flex-col items-center justify-center cursor-pointer opacity-0 group-hover/image:opacity-100 transition-opacity">
+                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            <span className="text-xs font-bold mt-1">{item.photo ? 'Change' : 'Upload'}</span>
+                            <input type="file" accept="image/*" className="hidden" onChange={e => handlePortfolioImageChange(index, e)} />
+                          </label>
                       </div>
                     </div>
 

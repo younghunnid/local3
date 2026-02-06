@@ -30,8 +30,8 @@ const BookingModal: React.FC<BookingModalProps> = ({ provider, onClose, onSubmit
           <button onClick={onClose} className="absolute top-6 right-6 text-white/70 hover:text-white text-2xl">✕</button>
           <div className="flex items-center gap-4">
              <img 
-              src={`https://images.unsplash.com/photo-${provider.photoId}?w=100&h=100&fit=crop&crop=face`}
-              className="w-16 h-16 rounded-2xl border-2 border-white/30"
+              src={provider.photoDataUrl || `https://images.unsplash.com/photo-${provider.photoId}?w=100&h=100&fit=crop&crop=face`}
+              className="w-16 h-16 rounded-2xl border-2 border-white/30 object-cover"
               alt={provider.name}
             />
             <div>

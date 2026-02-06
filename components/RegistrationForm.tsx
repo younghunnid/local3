@@ -45,91 +45,100 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSuccess, onBack }
           <p className="text-indigo-50 opacity-90">Fill out the form below to begin your journey with us.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-12 space-y-8">
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-400 uppercase">Full Name *</label>
-                <input required type="text" className="w-full px-4 py-3 bg-gray-50 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900" placeholder="Enter your full name" />
+        <form onSubmit={handleSubmit} className="p-12 space-y-12">
+          {/* Section 1: Personal Details */}
+          <div className="bg-slate-50 p-8 rounded-3xl border border-slate-100">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">1. Personal & Contact Details</h3>
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-400 uppercase">Full Name *</label>
+                  <input required type="text" className="w-full px-4 py-3 bg-white rounded-2xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900" placeholder="Enter your full name" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-400 uppercase">Phone Number *</label>
+                  <input required type="tel" className="w-full px-4 py-3 bg-white rounded-2xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900" placeholder="e.g. +231..." />
+                </div>
               </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-400 uppercase">Phone Number *</label>
-                <input required type="tel" className="w-full px-4 py-3 bg-gray-50 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900" placeholder="e.g. +231..." />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-400 uppercase">Email Address</label>
+                  <input type="email" className="w-full px-4 py-3 bg-white rounded-2xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900" placeholder="your@email.com" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-400 uppercase">Location/Area *</label>
+                  <input required type="text" className="w-full px-4 py-3 bg-white rounded-2xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900" placeholder="e.g. Monrovia" />
+                </div>
               </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-400 uppercase">Email Address</label>
-                <input type="email" className="w-full px-4 py-3 bg-gray-50 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900" placeholder="your@email.com" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-400 uppercase">Location/Area *</label>
-                <input required type="text" className="w-full px-4 py-3 bg-gray-50 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900" placeholder="e.g. Monrovia" />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-gray-400 uppercase">Primary Service *</label>
-              <select required className="w-full px-4 py-3 bg-gray-50 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900">
-                <option value="">Select Category</option>
-                {SERVICE_CATEGORIES.map(c => (
-                  <option key={c.id} value={c.id}>{c.title}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-400 uppercase">Years of Experience *</label>
-                <select required className="w-full px-4 py-3 bg-gray-50 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900">
-                   <option value="1">1 Year</option>
-                   <option value="2">2 Years</option>
-                   <option value="3">3 Years</option>
-                   <option value="4">4 Years</option>
-                   <option value="5+">5+ Years</option>
-                   <option value="10+">10+ Years</option>
-                </select>
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-400 uppercase">Hourly Rate (USD) *</label>
-                <input required type="number" className="w-full px-4 py-3 bg-gray-50 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900" placeholder="0.00" />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-gray-400 uppercase">Service Description *</label>
-              <textarea required rows={4} className="w-full px-4 py-3 bg-gray-50 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900" placeholder="Describe your services, specialties, and what makes you unique..."></textarea>
-            </div>
-
-            <div className="space-y-4">
-              <label className="text-xs font-bold text-gray-400 uppercase">Availability *</label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {['Weekdays', 'Weekends', 'Evenings', 'Emergency'].map(time => (
-                  <label key={time} className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100 cursor-pointer hover:bg-indigo-50 transition-colors">
-                    <input type="checkbox" className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                    <span className="text-sm font-medium text-gray-700">{time}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-gray-400 uppercase">Certifications & Licenses</label>
-              <input type="text" className="w-full px-4 py-3 bg-gray-50 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900" placeholder="List your professional certifications" />
-            </div>
-
-            <div className="p-8 bg-indigo-50 rounded-[2rem] border border-indigo-100">
-               <label className="flex items-start gap-4 cursor-pointer">
-                 <input required type="checkbox" className="mt-1 w-5 h-5 rounded border-indigo-300 text-indigo-600 focus:ring-indigo-500" />
-                 <span className="text-sm font-medium text-indigo-800 leading-relaxed">
-                   I agree to LSERS PROFESSIONAL SERVICES' Terms of Service and Community Guidelines. I understand the platform fees and commission structure, and I will maintain honesty and professionalism in all transactions. *
-                 </span>
-               </label>
             </div>
           </div>
 
-          <div className="flex gap-4">
+          {/* Section 2: Service Details */}
+          <div className="bg-slate-50 p-8 rounded-3xl border border-slate-100">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">2. Service & Experience</h3>
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-400 uppercase">Primary Service *</label>
+                <select required className="w-full px-4 py-3 bg-white rounded-2xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900">
+                  <option value="">Select Category</option>
+                  {SERVICE_CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
+                </select>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-400 uppercase">Years of Experience *</label>
+                  <select required className="w-full px-4 py-3 bg-white rounded-2xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900">
+                    <option value="1">1 Year</option>
+                    <option value="2">2 Years</option>
+                    <option value="3">3 Years</option>
+                    <option value="4">4 Years</option>
+                    <option value="5+">5+ Years</option>
+                    <option value="10+">10+ Years</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-400 uppercase">Hourly Rate (USD) *</label>
+                  <input required type="number" className="w-full px-4 py-3 bg-white rounded-2xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900" placeholder="0.00" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-400 uppercase">Service Description *</label>
+                <textarea required rows={4} className="w-full px-4 py-3 bg-white rounded-2xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900" placeholder="Describe your services, specialties, and what makes you unique..."></textarea>
+              </div>
+              <div className="space-y-4">
+                <label className="text-xs font-bold text-gray-400 uppercase">Availability *</label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  {['Weekdays', 'Weekends', 'Evenings', 'Emergency'].map(time => (
+                    <label key={time} className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-gray-200 cursor-pointer hover:bg-indigo-50 transition-colors">
+                      <input type="checkbox" className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+                      <span className="text-sm font-medium text-gray-700">{time}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Section 3: Credentials & Agreement */}
+          <div className="bg-slate-50 p-8 rounded-3xl border border-slate-100">
+             <h3 className="text-xl font-bold text-gray-900 mb-6">3. Credentials & Final Agreement</h3>
+             <div className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-400 uppercase">Certifications & Licenses</label>
+                  <input type="text" className="w-full px-4 py-3 bg-white rounded-2xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900" placeholder="List your professional certifications (optional)" />
+                </div>
+                <div className="p-6 bg-indigo-100 rounded-2xl border border-indigo-200">
+                  <label className="flex items-start gap-4 cursor-pointer">
+                    <input required type="checkbox" className="mt-1 w-5 h-5 rounded border-indigo-300 text-indigo-600 focus:ring-indigo-500 flex-shrink-0" />
+                    <span className="text-sm font-medium text-indigo-800 leading-relaxed">
+                      I agree to LSERS PROFESSIONAL SERVICES' Terms of Service and Community Guidelines. I understand the platform fees and commission structure, and I will maintain honesty and professionalism in all transactions. *
+                    </span>
+                  </label>
+                </div>
+             </div>
+          </div>
+
+          <div className="flex gap-4 pt-4">
             <button 
               type="button" 
               onClick={onBack}
