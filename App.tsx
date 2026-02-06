@@ -1,6 +1,4 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
-// Fix: Removed non-existent PropertyBookingRequest from imports as it's not exported by ./types
 import { ViewState, ServiceCategory, Provider, BookingRequest, Property, ConfirmationData, BookingHistoryItem, User, Product, ChatMessage, Theme, FavoriteItem, Review, NewProviderPayload, SiteContent } from './types';
 import { SERVICE_CATEGORIES, MOCK_PROVIDERS, MOCK_PROPERTIES, MOCK_BOOKING_HISTORY, MOCK_USERS, MOCK_PRODUCTS, MOCK_REVIEWS, DEFAULT_SITE_CONTENT } from './constants';
 import { getAiRecommendation, getProviderReply } from './services/gemini';
@@ -373,7 +371,6 @@ const App: React.FC = () => {
     }, 1500 + Math.random() * 1000);
   };
 
-  // Fix: Added missing favorite toggle handler
   const handleToggleFavorite = (type: 'provider' | 'product', id: number) => {
     setFavorites(prev => {
       const exists = prev.find(f => f.type === type && f.id === id);
@@ -385,7 +382,6 @@ const App: React.FC = () => {
     });
   };
 
-  // Fix: Added missing marketplace chat handler
   const handleMarketplaceChat = (product: Product) => {
     if (!currentUser) {
       showNotify("Unlock the hub to chat with sellers!", "info");
@@ -400,14 +396,12 @@ const App: React.FC = () => {
     }
   };
 
-  // Fix: Added missing marketplace WhatsApp handler
   const handleMarketplaceWhatsApp = (product: Product) => {
     const text = `Hi ${product.sellerName}, I'm interested in your item "${product.title}" on LSERS Marketplace.`;
     const waLink = `https://wa.me/${product.sellerPhone.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`;
     window.open(waLink, '_blank');
   };
 
-  // Fix: Added missing profile update handler
   const handleUpdateProfile = (newName: string, newPin: string) => {
     if (!currentUser) return;
     const updatedUser = { ...currentUser, name: newName };
@@ -427,7 +421,6 @@ const App: React.FC = () => {
   };
 
   const handleUpdateProvider = (updatedProvider: Provider) => {
-    // Check if new images were added in base64, save to virtual folder
     const processedProvider = { ...updatedProvider };
     if (processedProvider.photoDataUrl?.startsWith('data:')) {
       const assetId = saveToFolder(processedProvider.photoDataUrl);
@@ -472,7 +465,6 @@ const App: React.FC = () => {
 
   const handleAddProduct = (newProductData: Omit<Product, 'id' | 'sellerName' | 'sellerId'>) => {
     if (!currentUser) return;
-    // Save images to virtual folder
     const processedPhotos = newProductData.photos.map(p => p.startsWith('data:') ? saveToFolder(p) : p);
     
     const newProduct: Product = {
@@ -483,12 +475,10 @@ const App: React.FC = () => {
         sellerId: currentUser.id,
     };
     setProducts(prev => [newProduct, ...prev]);
-    setIsAddingProduct(true); // Keeping state true if adding multiple? No, close modal
     setIsAddingProduct(false);
     showNotify("Marketplace item stored in Virtual Assets.", "success");
   };
 
-  // Helper to resolve asset IDs
   const resolveAsset = (id: string) => getFromFolder(id) || id;
 
   if (!isUnlocked) return <PinScreen onUnlock={handleUnlock} />;

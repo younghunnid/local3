@@ -1,8 +1,7 @@
-
 import { ServiceCategory, Provider, Property, BookingHistoryItem, User, Product, Review, SiteContent } from './types';
 
-// EDIT THIS LINE: Change 'logo.png' to your actual logo filename (e.g., 'my-logo.jpg')
-export const LOGO_URL = 'logo.png';
+// Using relative path for deployment compatibility
+export const LOGO_URL = './logo.png';
 
 export const DEFAULT_SITE_CONTENT: SiteContent = {
   stats: {
